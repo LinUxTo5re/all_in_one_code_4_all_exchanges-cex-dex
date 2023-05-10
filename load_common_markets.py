@@ -4,6 +4,13 @@
 # load_market_for_selected_quote_asset() - call
 # find_common_markets() - don't call
 # create_variables_for_selected_exchanges_assets() - don't call
+
+'''
+    this file will fetch data for common ticker from selected exchanges
+    and save those into excel file
+'''
+
+# Importing required libraried
 from datetime import datetime
 from time import sleep
 from load_exchanges_filter_quote import loadFilterMarkets
@@ -11,9 +18,11 @@ import pandas as pd
 import ccxt
 import requests
 
+# global variables to access all over the class
 common_markets = exchanges = quote_asset = usdt_price_in_INR = []
 Compared_Markets_Data = dict()  # Global variable to Store Market data after comparison
 Markets_With_Problems = list()  # Will store USDT markets with problems like inactive/NoneType etc
+
 
 class loadCommonMarkets:
 
@@ -49,16 +58,18 @@ class loadCommonMarkets:
                         difference_spread_usdt = round(second_market_price - first_market_price,
                                                        2) if second_market_price > first_market_price else round(
                             first_market_price - second_market_price, 2)
-                        if difference_spread_usdt > 0.1:
+                        if difference_spread_usdt > 0.1:  # to continue, usdt diffr should be greater than 0.1 usdt
                             high_priced_exchange = str(
                                 exchanges[1]) if second_market_price > first_market_price else str(exchanges[0])
                             difference_percentage_ = round((difference_spread_usdt / (
                                 second_market_price if second_market_price > first_market_price else first_market_price)) * 100,
                                                            2)
-                            if difference_percentage_ < 50:
+                            if difference_percentage_ < 50: # market with diffr >= 50% will be ignored. those market may
+                                # duplicate with same name
                                 percentage_diff1 = (first_market['ask'] - first_market['bid']) / (
-                                            (first_market['ask'] + first_market['bid']) / 2) * 100
-                                if not percentage_diff1 > 2 or percentage_diff1 < -2:
+                                        (first_market['ask'] + first_market['bid']) / 2) * 100
+                                if not percentage_diff1 > 2 or percentage_diff1 < -2: # ask/bid diffr must not be
+                                    # greater than/less than 2%. otherwise ignore those market
                                     percentage_diff1 = (second_market['ask'] - second_market['bid']) / (
                                             (second_market['ask'] + second_market['bid']) / 2) * 100
                                     if not percentage_diff1 > 2 or percentage_diff1 < -2:
@@ -117,9 +128,11 @@ class loadCommonMarkets:
             isQuoteAssetUSDT = True
             if not str(''.join(quote_asset)) == 'usdt':
                 isQuoteAssetUSDT = False
+                # for non-usdt quote, will convert that rate into usdt for better understading
                 conversion_price = self.convert_quote_to_usdt(quote_asset)
 
-            for market_num, MARKET in enumerate(common_markets):
+            for market_num, MARKET in enumerate(common_markets): # comparing common markets one by one through loop
+                print(f"Information: Started Comparing: {market_num + 1} --> {MARKET}")
                 count = count + 1
                 first_market = second_market = ''
                 if market_num % 14 == 0:
@@ -130,18 +143,21 @@ class loadCommonMarkets:
                             first_market = globals()[exchange].fetch_ticker(MARKET)
                         if idx == 1:
                             second_market = globals()[exchange].fetch_ticker(MARKET)
-                sleep(delay)
+                sleep(delay)  # delayed when wazirx is one of selected exchange
                 '''first_market = globals()[exchanges[0]].fetch_ticker(MARKET)
                 globals()[str(exchanges[0])]
                 second_market = globals()[exchanges[1]].fetch_ticker(MARKET)'''
-                if not isQuoteAssetUSDT:
-                    self.compare_tickers_with_both_markets(usdt_price_in_inr, first_market, second_market, MARKET, count,
-                                                      conversion_price)
-                else:
-                    self.compare_tickers_with_both_markets(usdt_price_in_inr, first_market, second_market, MARKET, count)
+                if not isQuoteAssetUSDT: # execute for usdt quote
+                    self.compare_tickers_with_both_markets(usdt_price_in_inr, first_market, second_market, MARKET,
+                                                           count,
+                                                           conversion_price)
+                else: # execute for non-usdt quote like btc/usdc/busd etc
+                    self.compare_tickers_with_both_markets(usdt_price_in_inr, first_market, second_market, MARKET,
+                                                           count)
 
                 # sleep(1)
                 print('{}: {} completed'.format(count, str(MARKET)))
+                print('----------------------------------------------------------------------------------------')
             print('Total Active Markets: {} \n Total Inactive markets: {}'.format(len(Compared_Markets_Data),
                                                                                   len(Markets_With_Problems)))
         except Exception as e:
@@ -180,6 +196,9 @@ class loadCommonMarkets:
         df.to_excel('common_market.xlsx', sheet_name='Common_markets_bt_cex')
         print(df)
 
+    '''
+        starting point of this class
+    '''
     def startmainmethod(self, iscalledagain=None):
         global common_markets, exchanges, quote_asset, usdt_price_in_INR
         obj = loadFilterMarkets()
