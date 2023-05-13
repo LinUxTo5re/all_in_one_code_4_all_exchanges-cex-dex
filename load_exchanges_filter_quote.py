@@ -29,7 +29,7 @@ class loadFilterMarkets:
     def __init__(self):
         pass
 
-    def exchange_selection(self):
+    def exchange_selection(self, islist=None):
         while True:
             try:
                 global exchanges_to_compare, exchanges_names
@@ -37,16 +37,24 @@ class loadFilterMarkets:
                 # exchanges_to_compare = int(
                 #     input(f"How many exchanges do you want to compare? (Total: {len(ccxt.exchanges)} exchanges): "))
 
-                exchanges_to_compare = int(
-                    input(
-                        f"Please Select Only 2 Exchanges(project is in Initial Stage) (Total: {len(ccxt.exchanges)} exchanges): "))
+                if islist is None:
+                    exchanges_to_compare = int(
+                        input(
+                            f"Please Select Only 2 Exchanges(project is in Initial Stage) (Total: {len(ccxt.exchanges)} exchanges): "))
 
-                if exchanges_to_compare < 2 or exchanges_to_compare > len(ccxt.exchanges):
-                    raise ValueError(f"Number of exchanges should be between 2 and {len(ccxt.exchanges)}.")
+                    if exchanges_to_compare < 2 or exchanges_to_compare > len(ccxt.exchanges):
+                        raise ValueError(f"Number of exchanges should be between 2 and {len(ccxt.exchanges)}.")
 
-                print(f'{list(ccxt.exchanges)}')
-                print("\nEnter exchanges names with space between: ")
-                exchanges_names = input().split()[:exchanges_to_compare]
+                if islist or islist == None:
+                    print(f'{list(ccxt.exchanges)}')
+                    print("\nEnter exchanges names with space between: ")
+
+                if not islist and not islist == None:
+                    exchanges_names = list(ccxt.exchanges)
+                elif islist:
+                    exchanges_names = input().split()
+                else:
+                    exchanges_names = input().split()[:exchanges_to_compare]
 
             except Exception as e:
                 print(f"Error: {e}\n")
@@ -172,7 +180,7 @@ class loadFilterMarkets:
         from selected exchanges
     '''
 
-    def find_common_markets(self, iscalledagain = None):
+    def find_common_markets(self, iscalledagain=None):
         global assets_names, assets_copied, variable_name, exchanges_names
 
         if len(assets_copied) == 0 or iscalledagain:
@@ -226,8 +234,8 @@ class loadFilterMarkets:
     pass final_market as single parameter - don't pass with any another params
     '''
 
-    def create_variables_for_selected_exchanges_assets(self, exchanges_names = None, unique_quote_assets = None,
-                                                       final_market = None):
+    def create_variables_for_selected_exchanges_assets(self, exchanges_names=None, unique_quote_assets=None,
+                                                       final_market=None):
         global variable_name
         try:
 

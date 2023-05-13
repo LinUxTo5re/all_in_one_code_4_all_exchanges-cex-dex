@@ -7,7 +7,7 @@
 
 '''
     this file will fetch data for common ticker from selected exchanges
-    and save those into excel file
+    and save those into Excel file
 '''
 
 # Importing required libraried
@@ -17,6 +17,7 @@ from load_exchanges_filter_quote import loadFilterMarkets
 import pandas as pd
 import ccxt
 import requests
+import excel_read_write
 
 # global variables to access all over the class
 common_markets = exchanges = quote_asset = usdt_price_in_INR = []
@@ -74,7 +75,8 @@ class loadCommonMarkets:
                                             (second_market['ask'] + second_market['bid']) / 2) * 100
                                     if not percentage_diff1 > 2 or percentage_diff1 < -2:
                                         market = {
-                                            'date_time': market_datetime,
+                                            'market': market_,
+                                            # 'date_time': market_datetime,
                                             'first_market_price': first_market_price,
                                             'second_market_price': second_market_price,
                                             'difference_spread_usdt': difference_spread_usdt,
@@ -103,8 +105,10 @@ class loadCommonMarkets:
         except Exception as e:
             print('Error: falied to comapre tickers from both markets- ' + str(e))
 
-        if count == len(common_markets):
+        if count == len(common_markets) and len(Compared_Markets_Data) > 0:
             self.convert_into_dataframe(Compared_Markets_Data)
+        else:
+            print('Information: No market data found')
 
     # Fetching data for specific ticker from both exchanges and passing as argument to method
     def fetch_ticker_from_both_markets(self, usdt_price_in_inr, quote_asset, count=None):
@@ -193,9 +197,8 @@ class loadCommonMarkets:
     def convert_into_dataframe(self, Compared_Markets_Data):
         df = pd.DataFrame(Compared_Markets_Data)
         df = df.transpose()
-        df.to_excel('common_market.xlsx', sheet_name='Common_markets_bt_cex')
-        print(df)
-
+        # calling function to write file with dataframe
+        excel_read_write.writexlsxfile(df, 'common_market.xlsx', exchanges)
     '''
         starting point of this class
     '''
