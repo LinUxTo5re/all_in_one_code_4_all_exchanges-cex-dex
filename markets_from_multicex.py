@@ -1,6 +1,6 @@
 """
 this file will ask for list of exchanges or get all ccxt.exchanges() as
-list. next, it'll ask for list of markets. user can pass list of markets
+list. next, it'll ask for list of markets. user can pass list of markets,
 or it'll load existing markets from common_markets.xlsx Excel file.
 
 """
