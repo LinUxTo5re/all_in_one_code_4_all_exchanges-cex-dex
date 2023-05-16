@@ -66,7 +66,7 @@ class multicex_markets:
                 exchange_class = getattr(ccxt, exchange)()
                 for market in markets_names:
                     try:
-                        exchange_prices = exchange_class.fetch_ticker(market)  # fetching market
+                        exchange_prices = exchange_class.fetch_ticker(market.upper())  # fetching market
                         prices.append(
                             {'Exchange': exchange, 'Market': market, 'Last Price': exchange_prices['last']})
                         exchange_prices.clear()

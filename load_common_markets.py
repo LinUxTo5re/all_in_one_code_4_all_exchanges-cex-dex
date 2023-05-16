@@ -104,11 +104,10 @@ class loadCommonMarkets:
                 Markets_With_Problems.append(market_)
         except Exception as e:
             print('Error: falied to comapre tickers from both markets- ' + str(e))
+            Markets_With_Problems.append(market_)
 
         if count == len(common_markets) and len(Compared_Markets_Data) > 0:
             self.convert_into_dataframe(Compared_Markets_Data)
-        else:
-            print('Information: No market data found')
 
     # Fetching data for specific ticker from both exchanges and passing as argument to method
     def fetch_ticker_from_both_markets(self, usdt_price_in_inr, quote_asset, count=None):
