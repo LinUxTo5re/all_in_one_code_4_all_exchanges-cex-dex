@@ -1,0 +1,6 @@
+On hold- fetching network fees from exchanges for selected coins/exchanges using 
+web scrapping put on hold. this task can be done using exchanges api_key but for multiple 
+exchanges, it becomes teddy task to create api_key. So, I found coinmarketfees.com site which 
+were providing fees/withdrawl limit/deposit fee and many more but when i did cross check with
+exchanges, there was a difference between fees(deposit/withdrawal) for networks for specific
+coins. but not a large. so, this checking fees can be done manually for now.
