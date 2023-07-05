@@ -1,0 +1,11 @@
+# ignoring credentials file
+credentials.py
+
+# ignoring common market excel file
+common_market.xlsx
+
+# ignoring multicex markets excel file
+multicex_markets.xlsx
+
+# ignoring- stopping this file work for now. fiel won't be used for now
+network_fees.py
