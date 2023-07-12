@@ -1,0 +1,7 @@
+# ignoring credentials file
+credentials.py
+
+# ignoring common market excel file
+eigenphi_Hot_tokens.xlsx
+
+
