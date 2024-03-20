@@ -1,5 +1,7 @@
 # Arbitrage Opportunities with CEX and DEX using Python
 
+*Note: _not maintaining this repo longer_*
+
 This GitHub repository contains code and resources for identifying and exploiting arbitrage opportunities between centralized exchanges (CEX) and decentralized exchanges (DEX) using Python.
 
 ## Overview
